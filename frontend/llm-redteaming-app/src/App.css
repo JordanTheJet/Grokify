@@ -1,0 +1,820 @@
+/* Base styles */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #121212;
+  --bg-tertiary: #1a1a1a;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --accent-green: #00ff9d;
+  --accent-blue: #0084ff;
+  --accent-red: #ff3e3e;
+  --border-color: #333;
+  --terminal-shadow: 0 0 10px rgba(0, 255, 157, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.6;
+}
+
+.App {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hiddente;
+}
+
+/* Scanline effect */
+.App::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    transparent 0%,
+    rgba(10, 10, 10, 0.1) 50%,
+    transparent 100%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 100;
+  animation: scanlines 8s linear infinite;
+}
+
+@keyframes scanlines {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
+}
+
+/* Blinking cursor animation */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor {
+  display: inline-block;
+  width: 10px;
+  height: 20px;
+  background-color: var(--accent-green);
+  margin-left: 5px;
+  animation: blink 1s step-end infinite;
+}
+
+/* Header styles */
+.App-header {
+  background-color: var(--bg-secondary);
+  padding: 2rem 0;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+}
+
+.App-header::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent-green),
+    transparent
+  );
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--accent-green);
+  text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+  letter-spacing: -1px;
+}
+
+.App-header h1::before {
+  content: "$ whoami";
+  color: var(--accent-green);
+}
+
+.description {
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+  opacity: 0.8;
+  color: var(--text-secondary);
+}
+
+.description p::before {
+  content: "> ";
+  color: var(--accent-green);
+}
+
+/* Navigation styles */
+.main-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-green);
+  cursor: pointer;
+  letter-spacing: 2px;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 1.5rem;
+}
+
+.nav-links button {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.nav-links button::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--accent-green);
+  transition: width 0.3s;
+}
+
+.nav-links button:hover {
+  color: var(--accent-green);
+}
+
+.nav-links button:hover::after {
+  width: 100%;
+}
+
+/* Main content area */
+.App-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Input section styles */
+.input-section {
+  margin-bottom: 2rem;
+  background-color: var(--bg-secondary);
+  border-radius: 4px;
+  padding: 1.5rem;
+  box-shadow: var(--terminal-shadow);
+  border: 1px solid var(--border-color);
+}
+
+.prompt-container {
+  margin-bottom: 1.5rem;
+}
+
+.prompt-container label {
+  display: block;
+  text-align: left;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--accent-blue);
+}
+
+.prompt-container label::before {
+  content: "$ ";
+  color: var(--accent-green);
+}
+
+textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  resize: vertical;
+  box-sizing: border-box;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  min-height: 120px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 2px rgba(0, 255, 157, 0.2);
+}
+
+.model-selection {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.model-selector {
+  flex: 1;
+  text-align: left;
+}
+
+.model-selector label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--accent-blue);
+}
+
+.model-selector label::before {
+  content: "$ ";
+  color: var(--accent-green);
+}
+
+select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ff9d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 2px rgba(0, 255, 157, 0.2);
+}
+
+.submit-button {
+  background-color: var(--bg-tertiary);
+  color: var(--accent-green);
+  border: 1px solid var(--accent-green);
+  border-radius: 4px;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 255, 157, 0.2),
+    transparent
+  );
+  transition: all 0.6s;
+}
+
+.submit-button:hover {
+  background-color: rgba(0, 255, 157, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+}
+
+.submit-button:hover::before {
+  left: 100%;
+}
+
+.submit-button:disabled {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+  cursor: not-allowed;
+}
+
+/* Results section styles */
+.results-section {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.result-container {
+  flex: 1;
+  text-align: left;
+}
+
+.result-container h2 {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  font-size: 1.5rem;
+  color: var(--accent-blue);
+  font-weight: 500;
+}
+
+.result-container h2::before {
+  content: "$ ";
+  color: var(--accent-green);
+}
+
+.result-box {
+  background-color: var(--bg-secondary);
+  border-radius: 4px;
+  padding: 1.5rem;
+  box-shadow: var(--terminal-shadow);
+  height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  position: relative;
+}
+
+.result-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.result-box::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+}
+
+.result-box::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 4px;
+}
+
+.model-info {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: var(--accent-green);
+  font-size: 0.9rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.result-content {
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+/* Footer styles */
+.App-footer {
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+  padding: 1rem 0;
+  font-size: 0.9rem;
+  border-top: 1px solid var(--border-color);
+  position: relative;
+}
+
+.App-footer::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent-green),
+    transparent
+  );
+}
+
+.App-footer p::before {
+  content: "© ";
+  color: var(--accent-green);
+}
+
+/* Hero section */
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  text-align: center;
+  padding: 1rem;
+}
+
+.hero-section h1 {
+  font-size: 4rem;
+  color: var(--accent-green);
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.terminal-button {
+  background-color: var(--bg-tertiary);
+  color: var(--accent-green);
+  border: 1px solid var(--accent-green);
+  border-radius: 4px;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.terminal-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 255, 157, 0.2),
+    transparent
+  );
+  transition: all 0.6s;
+}
+
+.terminal-button:hover {
+  background-color: rgba(0, 255, 157, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+}
+
+.terminal-button:hover::before {
+  left: 100%;
+}
+
+/* About section */
+.about-section {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.about-section h2 {
+  color: var(--accent-blue);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.terminal-output {
+  background-color: var(--bg-secondary);
+  border-radius: 4px;
+  padding: 1.5rem;
+  box-shadow: var(--terminal-shadow);
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+  font-family: 'JetBrains Mono', monospace;
+  white-space: pre-wrap;
+}
+
+.terminal-output pre {
+  color: var(--accent-green);
+  margin-bottom: 1.5rem;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+.terminal-output p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.terminal-prompt {
+  color: var(--accent-green);
+  animation: blink 1s step-end infinite;
+}
+
+/* Projects section */
+.projects-section {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.projects-section h2 {
+  color: var(--accent-blue);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.project-card {
+  background-color: var(--bg-secondary);
+  border-radius: 4px;
+  padding: 1.5rem;
+  box-shadow: var(--terminal-shadow);
+  border: 1px solid var(--border-color);
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: var(--accent-green);
+  opacity: 0.7;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.project-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.project-card h3 {
+  color: var(--accent-blue);
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.project-description {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.project-status {
+  color: var(--accent-green);
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.project-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.mini-button {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mini-button:hover {
+  background-color: var(--bg-primary);
+  color: var(--accent-green);
+  border-color: var(--accent-green);
+}
+
+/* Terminal section */
+.terminal-section {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.terminal-section h2 {
+  color: var(--accent-blue);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.terminal-window {
+  background-color: var(--bg-secondary);
+  border-radius: 4px;
+  padding: 1rem;
+  box-shadow: var(--terminal-shadow);
+  border: 1px solid var(--border-color);
+  height: 400px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.terminal-window::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terminal-window::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+}
+
+.terminal-window::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 4px;
+}
+
+.terminal-entry {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.terminal-entry.user {
+  color: var(--text-primary);
+}
+
+.terminal-entry.system {
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+}
+
+.prompt {
+  color: var(--accent-green);
+  margin-right: 0.5rem;
+}
+
+.terminal-input-form {
+  display: flex;
+  margin-bottom: 1.5rem;
+}
+
+.terminal-input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: var(--bg-secondary);
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  box-shadow: var(--terminal-shadow);
+  border: 1px solid var(--border-color);
+}
+
+.terminal-input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  padding: 0.5rem;
+  outline: none;
+}
+
+/* Playground section */
+.playground-section {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.playground-section h2 {
+  color: var(--accent-blue);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+/* Home playground specific styles */
+.home-playground {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  position: relative;
+}
+
+.home-playground::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent-green),
+    transparent
+  );
+}
+
+/* Terminal typing effect */
+.typing-effect {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid var(--accent-green);
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: var(--accent-green) }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .App-main {
+    padding: 1rem;
+  }
+  
+  .results-section {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .model-selection {
+    flex-direction: column;
+  }
+  
+  .result-box {
+    height: 200px;
+  }
+  
+  .App-header h1 {
+    font-size: 2.2rem;
+  }
+}
+
+/* Easter egg - Konami code will trigger this class */
+.konami-mode {
+  animation: matrix-effect 2s forwards;
+}
+
+@keyframes matrix-effect {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(120deg);
+  }
+}
