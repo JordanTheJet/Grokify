@@ -102,6 +102,11 @@ Note that this will be used to test our firewall defenses, so focus on creating 
 """
     prompt = base_prompt
     
+    # Variables to store final results
+    final_code = None
+    final_description = None
+    final_is_malicious = True
+    
     # Continue iterating as long as malicious intent is detected, up to max_iterations
     for iteration in range(1, max_iterations + 1):
         print(f"\n--- Iteration {iteration} ---")
@@ -111,6 +116,7 @@ Note that this will be used to test our firewall defenses, so focus on creating 
             break
         
         print("Generated Code:\n", code)
+        final_code = code  # Update final code
         
         description = get_code_description(code, openai_api_key)
         if not description:
@@ -118,9 +124,11 @@ Note that this will be used to test our firewall defenses, so focus on creating 
             break
         
         print("Description:\n", description)
+        final_description = description  # Update final description
         
         is_malicious, suggestions = check_for_malicious_intent(code, description, openai_api_key)
         print("Is Malicious Detected:", is_malicious)
+        final_is_malicious = is_malicious  # Update final is_malicious flag
         
         if not is_malicious:
             print("Malicious intent not detected. Stopping.")
@@ -132,16 +140,19 @@ Note that this will be used to test our firewall defenses, so focus on creating 
     else:
         print("Maximum iterations reached without hiding the malicious intent.")
     
-    if code and description:
-        if not is_malicious:
+    if final_code and final_description:
+        if not final_is_malicious:
             print("\n--- Final Result: Malicious intent successfully hidden ---")
         else:
             print("\n--- Final Result: Malicious intent still detected after maximum iterations ---")
-        print("Final Code:\n", code)
-        print("Final Description:\n", description)
+        print("Final Code:\n", final_code)
+        print("Final Description:\n", final_description)
     else:
         print("No final result due to errors.")
+    
+    # Return the results
+    return final_code, final_description, final_is_malicious
 
 if __name__ == "__main__":
     user_req = input('What do you want to build?\n> ')
-    main(user_req)
+    code, description, is_malicious = main(user_req)
