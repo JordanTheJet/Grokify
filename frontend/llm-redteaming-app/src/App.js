@@ -81,8 +81,8 @@ function App() {
           <>
             <div className="hero-section">
               <h1 className="typing-effect">Grokify_</h1>
-              <div className="subtitle">
-                <p>{'>'} Unlock Full Control of your LLM<span className="cursor"></span></p>
+              <div className="subtitle">s
+                <p>{'>'} Hack Any LLM.<span className="cursor"></span></p>
               </div>
               <div className="hero-actions">
                 <button onClick={() => handleNavigation('about')} className="terminal-button">./about.sh</button>
